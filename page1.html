@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wild Wild West - Brython</title>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/brython@3.10.4/brython.min.js"></script>
+</head>
+<body onload="brython()">
+    <h1>Wild Wild West</h1>
+    <canvas id="gameCanvas" width="1200" height="800" style="border:1px solid black;"></canvas>
+    <div>
+        <p>Score: <span id="score">0</span></p>
+        <p>Lives: <span id="lives">3</span></p>
+    </div>
+
+    <script type="text/python">
+        from browser import document, window, timer
+        import random
+
+        # Получаем canvas и его контекст
+        canvas = document['gameCanvas']
+        ctx = canvas.getContext('2d')
+
+        # Загрузка изображений
+        background_img = window.Image.new()
+        background_img.src = "images/level1.png"
+
+        aim_img = window.Image.new()
+        aim_img.src = "images/aim.png"
+
+        enemy_image = window.Image.new()
+        enemy_image.src = "images/enemy1.png"
+
+        # Загрузка звуков
+        shot_sound = window.Audio.new("sounds/shot.mp3")
+        hit_sound = window.Audio.new("sounds/hit.mp3")
+
+        # Настройки игры
+        score = 0
+        lives = 3
+        enemies = []
+
+        # Обновление интерфейса
+        def update_ui():
+            document["score"].text = str(score)
+            document["lives"].text = str(lives)
+
+        # Функция для рисования врагов
+        def draw_enemy(x, y):
+            ctx.drawImage(enemy_image, x, y)
+
+        # Функция для рисования прицела
+        def draw_aim(x, y):
+            ctx.drawImage(aim_img, x - 25, y - 25, 50, 50)
+
+        # Обновление позиций врагов и проверка столкновений
+        def update_enemies():
+            global lives
+            for enemy in enemies:
+                enemy['y'] += 5  # Враги двигаются вниз
+                if enemy['y'] > canvas.height:
+                    enemies.remove(enemy)
+                    lives -= 1
+                    update_ui()
+
+        # Основной игровой цикл
+        def game_loop():
+            global score, lives
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height)  # Очистка экрана
+            ctx.drawImage(background_img, 0, 0)  # Отрисовка фона
+
+            # Обновляем врагов
+            update_enemies()
+
+            # Отрисовка всех врагов
+            for enemy in enemies:
+                draw_enemy(enemy['x'], enemy['y'])
+
+            # Проверка на конец игры
+            if lives <= 0:
+                ctx.font = "50px Arial"
+                ctx.fillStyle = "red"
+                ctx.fillText("Game Over", canvas.width / 2 - 150, canvas.height / 2)
+            else:
+                # Обновление интерфейса
+                update_ui()
+
+                # Отрисовка прицела на позиции мыши
+                mouse_x, mouse_y = window.mouseX, window.mouseY
+                draw_aim(mouse_x, mouse_y)
+
+            # Обновление экрана на следующий кадр
+            window.requestAnimationFrame(game_loop)
+
+        # Проверка попадания по врагу
+        def check_hit(x, y):
+            for enemy in enemies:
+                if enemy['x'] < x < enemy['x'] + 50 and enemy['y'] < y < enemy['y'] + 50:
+                    enemies.remove(enemy)
+                    return True
+            return False
+
+        # Обработка кликов и проверка на попадание
+        def on_click(event):
+            global score
+            x = event.x - canvas.offsetLeft
+            y = event.y - canvas.offsetTop
+            shot_sound.play()  # Проигрываем звук выстрела
+            if check_hit(x, y):
+                hit_sound.play()  # Проигрываем звук попадания
+                score += 10
+            update_ui()
+
+        # Добавление врагов с интервалом
+        def spawn_enemy():
+            x = random.randint(0, canvas.width - 100)
+            y = random.randint(0, canvas.height - 100)
+            enemies.append({'x': x, 'y': y})
+
+        # Таймер для появления врагов каждые 2 секунды
+        timer.set_interval(spawn_enemy, 2000)
+
+        # Запуск игрового цикла
+        window.requestAnimationFrame(game_loop)
+
+        # Связываем события клика с Canvas
+        canvas.bind('click', on_click)
+    </script>
+</body>
+</html>
