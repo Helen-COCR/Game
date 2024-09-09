@@ -18,11 +18,11 @@
         from browser import document, window, timer
         import random
 
-        # Получаем canvas и его контекст
+        # ГЏГ®Г«ГіГ·Г ГҐГ¬ canvas ГЁ ГҐГЈГ® ГЄГ®Г­ГІГҐГЄГ±ГІ
         canvas = document['gameCanvas']
         ctx = canvas.getContext('2d')
 
-        # Загрузка изображений
+        # Г‡Г ГЈГ°ГіГ§ГЄГ  ГЁГ§Г®ГЎГ°Г Г¦ГҐГ­ГЁГ©
         background_img = window.Image.new()
         background_img.src = "images/level1.png"
 
@@ -32,69 +32,69 @@
         enemy_image = window.Image.new()
         enemy_image.src = "images/enemy1.png"
 
-        # Загрузка звуков
+        # Г‡Г ГЈГ°ГіГ§ГЄГ  Г§ГўГіГЄГ®Гў
         shot_sound = window.Audio.new("sounds/shot.mp3")
         hit_sound = window.Audio.new("sounds/hit.mp3")
 
-        # Настройки игры
+        # ГЌГ Г±ГІГ°Г®Г©ГЄГЁ ГЁГЈГ°Г»
         score = 0
         lives = 3
         enemies = []
 
-        # Обновление интерфейса
+        # ГЋГЎГ­Г®ГўГ«ГҐГ­ГЁГҐ ГЁГ­ГІГҐГ°ГґГҐГ©Г±Г 
         def update_ui():
             document["score"].text = str(score)
             document["lives"].text = str(lives)
 
-        # Функция для рисования врагов
+        # Г”ГіГ­ГЄГ¶ГЁГї Г¤Г«Гї Г°ГЁГ±Г®ГўГ Г­ГЁГї ГўГ°Г ГЈГ®Гў
         def draw_enemy(x, y):
             ctx.drawImage(enemy_image, x, y)
 
-        # Функция для рисования прицела
+        # Г”ГіГ­ГЄГ¶ГЁГї Г¤Г«Гї Г°ГЁГ±Г®ГўГ Г­ГЁГї ГЇГ°ГЁГ¶ГҐГ«Г 
         def draw_aim(x, y):
             ctx.drawImage(aim_img, x - 25, y - 25, 50, 50)
 
-        # Обновление позиций врагов и проверка столкновений
+        # ГЋГЎГ­Г®ГўГ«ГҐГ­ГЁГҐ ГЇГ®Г§ГЁГ¶ГЁГ© ГўГ°Г ГЈГ®Гў ГЁ ГЇГ°Г®ГўГҐГ°ГЄГ  Г±ГІГ®Г«ГЄГ­Г®ГўГҐГ­ГЁГ©
         def update_enemies():
             global lives
             for enemy in enemies:
-                enemy['y'] += 5  # Враги двигаются вниз
+                enemy['y'] += 5  # Г‚Г°Г ГЈГЁ Г¤ГўГЁГЈГ ГѕГІГ±Гї ГўГ­ГЁГ§
                 if enemy['y'] > canvas.height:
                     enemies.remove(enemy)
                     lives -= 1
                     update_ui()
 
-        # Основной игровой цикл
+        # ГЋГ±Г­Г®ГўГ­Г®Г© ГЁГЈГ°Г®ГўГ®Г© Г¶ГЁГЄГ«
         def game_loop():
             global score, lives
 
-            ctx.clearRect(0, 0, canvas.width, canvas.height)  # Очистка экрана
-            ctx.drawImage(background_img, 0, 0)  # Отрисовка фона
+            ctx.clearRect(0, 0, canvas.width, canvas.height)  # ГЋГ·ГЁГ±ГІГЄГ  ГЅГЄГ°Г Г­Г 
+            ctx.drawImage(background_img, 0, 0)  # ГЋГІГ°ГЁГ±Г®ГўГЄГ  ГґГ®Г­Г 
 
-            # Обновляем врагов
+            # ГЋГЎГ­Г®ГўГ«ГїГҐГ¬ ГўГ°Г ГЈГ®Гў
             update_enemies()
 
-            # Отрисовка всех врагов
+            # ГЋГІГ°ГЁГ±Г®ГўГЄГ  ГўГ±ГҐГµ ГўГ°Г ГЈГ®Гў
             for enemy in enemies:
                 draw_enemy(enemy['x'], enemy['y'])
 
-            # Проверка на конец игры
+            # ГЏГ°Г®ГўГҐГ°ГЄГ  Г­Г  ГЄГ®Г­ГҐГ¶ ГЁГЈГ°Г»
             if lives <= 0:
                 ctx.font = "50px Arial"
                 ctx.fillStyle = "red"
                 ctx.fillText("Game Over", canvas.width / 2 - 150, canvas.height / 2)
             else:
-                # Обновление интерфейса
+                # ГЋГЎГ­Г®ГўГ«ГҐГ­ГЁГҐ ГЁГ­ГІГҐГ°ГґГҐГ©Г±Г 
                 update_ui()
 
-                # Отрисовка прицела на позиции мыши
+                # ГЋГІГ°ГЁГ±Г®ГўГЄГ  ГЇГ°ГЁГ¶ГҐГ«Г  Г­Г  ГЇГ®Г§ГЁГ¶ГЁГЁ Г¬Г»ГёГЁ
                 mouse_x, mouse_y = window.mouseX, window.mouseY
                 draw_aim(mouse_x, mouse_y)
 
-            # Обновление экрана на следующий кадр
+            # ГЋГЎГ­Г®ГўГ«ГҐГ­ГЁГҐ ГЅГЄГ°Г Г­Г  Г­Г  Г±Г«ГҐГ¤ГіГѕГ№ГЁГ© ГЄГ Г¤Г°
             window.requestAnimationFrame(game_loop)
 
-        # Проверка попадания по врагу
+        # ГЏГ°Г®ГўГҐГ°ГЄГ  ГЇГ®ГЇГ Г¤Г Г­ГЁГї ГЇГ® ГўГ°Г ГЈГі
         def check_hit(x, y):
             for enemy in enemies:
                 if enemy['x'] < x < enemy['x'] + 50 and enemy['y'] < y < enemy['y'] + 50:
@@ -102,30 +102,30 @@
                     return True
             return False
 
-        # Обработка кликов и проверка на попадание
+        # ГЋГЎГ°Г ГЎГ®ГІГЄГ  ГЄГ«ГЁГЄГ®Гў ГЁ ГЇГ°Г®ГўГҐГ°ГЄГ  Г­Г  ГЇГ®ГЇГ Г¤Г Г­ГЁГҐ
         def on_click(event):
             global score
             x = event.x - canvas.offsetLeft
             y = event.y - canvas.offsetTop
-            shot_sound.play()  # Проигрываем звук выстрела
+            shot_sound.play()  # ГЏГ°Г®ГЁГЈГ°Г»ГўГ ГҐГ¬ Г§ГўГіГЄ ГўГ»Г±ГІГ°ГҐГ«Г 
             if check_hit(x, y):
-                hit_sound.play()  # Проигрываем звук попадания
+                hit_sound.play()  # ГЏГ°Г®ГЁГЈГ°Г»ГўГ ГҐГ¬ Г§ГўГіГЄ ГЇГ®ГЇГ Г¤Г Г­ГЁГї
                 score += 10
             update_ui()
 
-        # Добавление врагов с интервалом
+        # Г„Г®ГЎГ ГўГ«ГҐГ­ГЁГҐ ГўГ°Г ГЈГ®Гў Г± ГЁГ­ГІГҐГ°ГўГ Г«Г®Г¬
         def spawn_enemy():
             x = random.randint(0, canvas.width - 100)
             y = random.randint(0, canvas.height - 100)
             enemies.append({'x': x, 'y': y})
 
-        # Таймер для появления врагов каждые 2 секунды
+        # Г’Г Г©Г¬ГҐГ° Г¤Г«Гї ГЇГ®ГїГўГ«ГҐГ­ГЁГї ГўГ°Г ГЈГ®Гў ГЄГ Г¦Г¤Г»ГҐ 2 Г±ГҐГЄГіГ­Г¤Г»
         timer.set_interval(spawn_enemy, 2000)
 
-        # Запуск игрового цикла
+        # Г‡Г ГЇГіГ±ГЄ ГЁГЈГ°Г®ГўГ®ГЈГ® Г¶ГЁГЄГ«Г 
         window.requestAnimationFrame(game_loop)
 
-        # Связываем события клика с Canvas
+        # Г‘ГўГїГ§Г»ГўГ ГҐГ¬ Г±Г®ГЎГ»ГІГЁГї ГЄГ«ГЁГЄГ  Г± Canvas
         canvas.bind('click', on_click)
     </script>
 </body>
